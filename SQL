@@ -1,1 +1,29 @@
+// Hotel_Queries.sql
 
+// question A-1
+SELECT user_id, room_no
+FROM bookings
+WHERE (user_id, booking_date) IN (
+    SELECT user_id, MAX(booking_date)
+    FROM bookings
+    GROUP BY user_id
+);
+
+// question A-2
+SELECT bc.booking_id,
+       SUM(bc.item_quantity * i.item_rate) AS total_amount
+FROM booking_commercials bc
+JOIN items i ON bc.item_id = i.item_id
+WHERE MONTH(bc.bill_date) = 11
+AND YEAR(bc.bill_date) = 2021
+GROUP BY bc.booking_id;
+
+// question A-3
+SELECT bc.bill_id,
+       SUM(bc.item_quantity * i.item_rate) AS bill_amount
+FROM booking_commercials bc
+JOIN items i ON bc.item_id = i.item_id
+WHERE MONTH(bc.bill_date) = 10
+AND YEAR(bc.bill_date) = 2021
+GROUP BY bc.bill_id
+HAVING SUM(bc.item_quantity * i.item_rate) > 1000;
